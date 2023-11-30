@@ -189,7 +189,7 @@ public class Student extends Person {
         nextClassDate = date;
         nextClassTime = time;
         nextClassCredits = credits;
-        return onSchedule.booleanValue();
+        return onSchedule;
     }
 
 }

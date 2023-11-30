@@ -4,11 +4,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,9 +37,7 @@ public class StudentTest {
         HashMap<String, String> grades = student.myGetGrades();
         System.out.println("\n" + grades.getClass());
         System.out.println("\nThe student has completed the following " + grades.size() + " classes:");
-        Iterator<String> it = grades.keySet().iterator();
-        while (it.hasNext()) {
-            String key = it.next();
+        for (String key : grades.keySet()) {
             String value = grades.get(key);
             System.out.format("\n  %s\t%s", key, value);
         }
@@ -50,7 +46,7 @@ public class StudentTest {
     @Test
     public void testNewInstanceForClass() {
         try {
-            Class arrayListClass = Class.forName("java.util.ArrayList");
+            Class<?> arrayListClass = Class.forName("java.util.ArrayList");
             ArrayList<String> sports = (ArrayList<String>) arrayListClass.getDeclaredConstructor().newInstance();
             assertTrue(sports instanceof ArrayList);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException |
