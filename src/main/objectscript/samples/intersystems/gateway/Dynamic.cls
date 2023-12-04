@@ -78,7 +78,7 @@ ClassMethod Test(jarPath As %RawString) [ Final ]
             write "  ",key," ",value,!
         }
     } else {
-        write !, "myGetGrades() bug returned a null oref"
+        write !, "myGetGrades() bug in intersystems-jdbc caused myGetGrades() to return a null oref, project requires intersystems-jdbc version > 3.8.2"
     }
 	write !,"Highest grade: ", student.myGetHighestGrade()
 
@@ -89,14 +89,17 @@ ClassMethod Test(jarPath As %RawString) [ Final ]
 	write "English Comp Grade: ",student.getGrade("English Comp"),!
 
 	set grades = student.myGetGrades()
-	write !,"Student has completed the following ",grades.size()," classes:",!
-	set it = grades.keySet().iterator()
-	while (it.hasNext()) {
-    	set key = it.next()
-    	set value = grades.get(key)
-		write "  ",key," ",value,!
-	}
-
+    if $ISOBJECT(grades) {
+        write !,"Student has completed the following ",grades.size()," classes:",!
+        set it = grades.keySet().iterator()
+        while (it.hasNext()) {
+            set key = it.next()
+            set value = grades.get(key)
+            write "  ",key," ",value,!
+        }
+    } else {
+        write !, "myGetGrades() bug in intersystems-jdbc caused myGetGrades() to return a null oref, project requires intersystems-jdbc version > 3.8.2"
+    }
 	write !,"Highest grade now: "
 	write $NUMBER($DECIMAL(student.myGetHighestGrade()),2)
 

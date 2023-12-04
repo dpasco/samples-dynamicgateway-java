@@ -10,9 +10,9 @@ Property gateway As %External.JavaGateway;
 
 Method OnBeforeAllTests() as %Status
 {
-	set jarPath = ..Manager.jarPath
-	do $$$LogMessage("OnBeforeAll: jarPath = " _ jarPath)
+	set jarPath = "/home/danp/community/projects/samples-dynamicgateway-java/target/samples-dynamicgateway-java-1.0.0.jar" // ..Manager.jarPath
 	set ..gateway = $SYSTEM.external.getJavaGateway()
+	do $$$LogMessage("OnBeforeAll: jarPath = " _ jarPath _ ", intersystems-jdbc version = '" _ ..gateway.getExternalLanguageVersion() _ "'")
 	do ..gateway.addToPath(jarPath)
 	do $$$LogMessage("OnBeforeAll: Added "_jarPath_" to Gateway Path")
 	return $$$OK
@@ -27,6 +27,7 @@ method OnAfterAllTests() as %Status {
 Method TestBasics() [ Final ]
 {
 	try {
+    	do $$$LogMessage("intersystems-jdbc version = '" _ ..gateway.getProductVersion() _ "'")
 	    try {
         	set student = ..createStudent(29, "976-01-6712")
         	do $$$AssertTrue($ISOBJECT(student),"samples.intersystems.gateway.Student - instantiated with args [29, '976-01-6712']")
@@ -86,7 +87,7 @@ Method TestBasics() [ Final ]
 				do $$$AssertTrue(0, "Student completed the following: Exception caught during iteration: " _ ce.AsSQLMessage())
 			}
 		} else {
-			do $$$AssertTrue(0, "myGetGrades(): returned a null oref")
+			do $$$AssertTrue(0, "myGetGrades(): returned a null oref due to a bug in intersystems-jdbc versions prior to 3.8.3")
 		}
 
 		set highestGradeActual = student.myGetHighestGrade()
@@ -114,7 +115,7 @@ Method TestBasics() [ Final ]
 				do $$$AssertTrue(0, "Student has completed the following: EXCEPTION caught - " _ cge.AsSQLMessage())
 			}
 		} else {
-			do $$$AssertTrue(0, "Student has completed the following: student.myGetGrades() returned a null oref")
+			do $$$AssertTrue(0, "Student has completed the following: student.myGetGrades() returned a null oref due to a bug in intersystems-jdbc versions prior to 3.8.3")
 		}
 		set highestGradeExpected = 3.92
 		set highestGradeActual = $NUMBER($DECIMAL(student.myGetHighestGrade()),2)
